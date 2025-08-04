@@ -1,0 +1,232 @@
+# 🌸 Nanpin Bot Configuration
+# 永久ナンピン (Permanent DCA) Strategy Settings
+
+# ===========================
+# CORE STRATEGY SETTINGS
+# ===========================
+strategy:
+  name: "永久ナンピン"
+  description: "Permanent Dollar-Cost Averaging with Fibonacci levels"
+  symbol: "BTC_USDC_PERP"
+  base_currency: "USDC"
+  target_currency: "BTC"
+  
+# ===========================
+# FIBONACCI RETRACEMENT LEVELS
+# ===========================
+fibonacci:
+  # Enable/disable specific Fibonacci levels
+  levels:
+    "23.6%": 
+      enabled: true
+      multiplier: 1.0      # 1x base position size
+      confidence: 0.7      # Lower confidence (weak retracement)
+    "38.2%":
+      enabled: true
+      multiplier: 2.0      # 2x base position size
+      confidence: 0.8      # Medium confidence
+    "50.0%":
+      enabled: true
+      multiplier: 3.0      # 3x base position size
+      confidence: 0.85     # High confidence (psychological level)
+    "61.8%":
+      enabled: true
+      multiplier: 5.0      # 5x base position size (Golden ratio)
+      confidence: 0.9      # Very high confidence
+    "78.6%":
+      enabled: true
+      multiplier: 8.0      # 8x base position size (extreme opportunity)
+      confidence: 0.95     # Maximum confidence
+  
+  # Lookback period for calculating recent highs
+  lookback_hours: 720    # 30 days (720 hours)
+  min_high_age_hours: 24 # Minimum age for a "valid" high
+  update_frequency: 300  # Update levels every 5 minutes
+
+# ===========================
+# POSITION SCALING SETTINGS
+# ===========================
+position_scaling:
+  base_usdc_amount: 100.0        # Base amount in USDC for 1x position
+  max_total_exposure: 10000.0    # Maximum total USDC exposure
+  min_order_size: 10.0           # Minimum order size in USDC
+  scaling_cooldown: 1800         # 30 minutes between scaling actions
+  
+  # Position size validation
+  max_single_order: 1000.0       # Maximum single order in USDC
+  max_daily_buys: 5000.0         # Maximum daily buy volume in USDC
+
+# ===========================
+# RISK MANAGEMENT
+# ===========================
+risk_management:
+  # Collateral requirements
+  min_collateral_ratio: 4.0     # 400% minimum collateral ratio
+  warning_ratio: 3.5             # Warning at 350%
+  critical_ratio: 3.0            # Critical at 300%
+  emergency_ratio: 2.5           # Emergency stop at 250%
+  
+  # Margin management
+  max_margin_usage: 0.6          # 60% maximum margin usage
+  target_margin_usage: 0.4       # 40% target margin usage
+  
+  # Liquidation protection
+  liquidation_buffer: 0.15       # 15% buffer above liquidation price
+  emergency_stop_enabled: true   # Enable emergency stops
+  
+  # Position monitoring
+  position_check_interval: 60    # Check position every 60 seconds
+  margin_check_interval: 30      # Check margin every 30 seconds
+
+# ===========================
+# LIQUIDATION INTELLIGENCE
+# ===========================
+liquidation_intelligence:
+  # Enable/disable liquidation data sources
+  sources:
+    hyperliquid: true
+    binance: true
+    coinglass: true
+    flipside: false  # Disabled by default (slower)
+    
+  # Liquidation confirmation settings
+  min_liquidation_volume: 1000000.0  # $1M minimum for significant liquidation
+  liquidation_proximity: 0.02        # 2% price proximity to liquidation
+  cluster_significance: 0.05         # 5% of total OI for significant cluster
+  
+  # Update frequencies
+  liquidation_update_interval: 180   # 3 minutes
+  heatmap_update_interval: 600       # 10 minutes
+
+# ===========================
+# MACRO INDICATORS
+# ===========================
+macro_indicators:
+  # Fear & Greed Index
+  fear_greed:
+    enabled: true
+    extreme_fear_threshold: 25      # Below 25 = extreme fear
+    fear_threshold: 45              # Below 45 = fear
+    multiplier_extreme_fear: 1.5    # 1.5x position size in extreme fear
+    multiplier_fear: 1.2            # 1.2x position size in fear
+    
+  # Bitcoin Dominance
+  btc_dominance:
+    enabled: true
+    trend_lookback_days: 7          # 7-day trend analysis
+    increasing_multiplier: 0.8      # Reduce position when dominance increasing
+    decreasing_multiplier: 1.2      # Increase position when dominance decreasing
+  
+  # On-chain metrics
+  onchain:
+    enabled: true
+    mvrv_oversold: 0.8             # MVRV below 0.8 = oversold
+    nupl_capitulation: 0.25        # NUPL below 0.25 = capitulation
+    puell_undervalued: 0.5         # Puell below 0.5 = undervalued
+    
+  # Update frequency
+  update_interval: 1800            # 30 minutes
+
+# ===========================
+# BACKPACK EXCHANGE SETTINGS
+# ===========================
+backpack:
+  # API settings
+  base_url: "https://api.backpack.exchange"
+  timeout: 30.0
+  max_retries: 3
+  retry_delay: 1.0
+  
+  # Order settings
+  order_type: "Market"
+  time_in_force: "IOC"  # Immediate or Cancel
+  
+  # Rate limiting
+  requests_per_minute: 100
+  burst_limit: 10
+  
+  # Authentication
+  signature_window: 5000  # 5 seconds
+  max_window: 60000      # 60 seconds maximum
+
+# ===========================
+# LOGGING AND MONITORING
+# ===========================
+logging:
+  level: "INFO"
+  log_file: "logs/nanpin_trading.log"
+  max_file_size: "10MB"
+  backup_count: 5
+  
+  # Log specific events
+  log_fibonacci_calculations: true
+  log_position_scaling: true
+  log_liquidation_data: true
+  log_macro_indicators: true
+  log_risk_checks: true
+
+# ===========================
+# PERFORMANCE TRACKING
+# ===========================
+performance:
+  # Reporting
+  daily_report: true
+  weekly_report: true
+  monthly_report: true
+  
+  # Metrics to track
+  track_pnl: true
+  track_position_size: true
+  track_fibonacci_hit_rate: true
+  track_liquidation_avoidance: true
+  
+  # Benchmarking
+  benchmark_symbol: "BTC_USDC_PERP"
+  compare_to_buy_hold: true
+  compare_to_dca: true
+  
+  # Report location
+  report_directory: "results/nanpin_reports"
+
+# ===========================
+# SAFETY CONTROLS
+# ===========================
+safety:
+  # Circuit breakers
+  max_daily_loss: 0.1              # 10% maximum daily loss
+  max_weekly_loss: 0.15             # 15% maximum weekly loss
+  max_drawdown: 0.3                 # 30% maximum drawdown
+  
+  # Emergency stops
+  api_error_threshold: 5            # Stop after 5 consecutive API errors
+  margin_call_stop: true            # Stop trading on margin call
+  liquidation_proximity_stop: true  # Stop when too close to liquidation
+  
+  # Confirmation requirements
+  require_confirmation_large_orders: true
+  large_order_threshold: 500.0      # USDC threshold for confirmation
+  
+  # Dry run mode
+  dry_run: false                    # Set to true for testing
+  paper_trading: false              # Set to true for paper trading
+
+# ===========================
+# ADVANCED SETTINGS
+# ===========================
+advanced:
+  # Strategy refinements
+  use_volume_confirmation: true     # Require volume confirmation for entries
+  use_momentum_filter: true         # Filter entries with momentum analysis
+  use_correlation_filter: false     # Filter based on market correlation
+  
+  # Technical analysis
+  rsi_oversold: 30                  # RSI oversold threshold
+  bollinger_std: 2.0               # Bollinger Bands standard deviation
+  
+  # Machine learning (future enhancement)
+  ml_enabled: false                 # Enable ML predictions
+  ml_confidence_threshold: 0.7      # Minimum ML confidence for trades
+  
+  # Experimental features
+  adaptive_position_sizing: false   # Adapt position size based on volatility
+  dynamic_fibonacci_levels: false   # Adjust Fibonacci levels based on market regime

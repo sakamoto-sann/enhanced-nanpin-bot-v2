@@ -1,0 +1,21 @@
+# Original Trading Criteria Backup
+# Save original values before lowering for test
+
+original_criteria:
+  min_confidence_threshold: 0.75
+  max_daily_trades: 5
+  fibonacci_opportunities_threshold: 3  # Estimated from code
+  liquidation_cluster_min_threshold: 0.5  # Estimated
+  confidence_threshold: 0.75
+  position_size_min: 10.0  # Minimum order size
+  
+# Test criteria (temporary)
+test_criteria:
+  min_confidence_threshold: 0.10  # Lower to 10% for testing
+  max_daily_trades: 10  # Allow more trades
+  fibonacci_opportunities_threshold: 1  # Lower threshold
+  liquidation_cluster_min_threshold: 0.1  # Much lower
+  confidence_threshold: 0.10  # Very low for testing
+  position_size_min: 10.0  # Keep minimum the same
+
+# Note: These will be restored after testing

@@ -1,0 +1,286 @@
+# 🌸 Fibonacci Retracement Levels Configuration
+# Mathematical foundation for 永久ナンピン strategy
+
+# ===========================
+# FIBONACCI SEQUENCE & RATIOS
+# ===========================
+fibonacci_ratios:
+  # Primary Fibonacci retracement levels (most commonly used)
+  primary:
+    - level: 0.236
+      name: "23.6%"
+      description: "Shallow retracement - weak correction"
+      strength: "weak"
+      confluence_weight: 1.0
+      
+    - level: 0.382
+      name: "38.2%"
+      description: "Medium retracement - moderate correction"
+      strength: "moderate"
+      confluence_weight: 1.5
+      
+    - level: 0.500
+      name: "50.0%"
+      description: "Half retracement - psychological level"
+      strength: "strong"
+      confluence_weight: 2.0
+      
+    - level: 0.618
+      name: "61.8%"
+      description: "Golden ratio - prime retracement level"
+      strength: "very_strong"
+      confluence_weight: 3.0
+      
+    - level: 0.786
+      name: "78.6%"
+      description: "Deep retracement - extreme opportunity"
+      strength: "extreme"
+      confluence_weight: 4.0
+
+  # Secondary Fibonacci levels (additional precision)
+  secondary:
+    - level: 0.146
+      name: "14.6%"
+      description: "Very shallow retracement"
+      strength: "minimal"
+      confluence_weight: 0.5
+      
+    - level: 0.272
+      name: "27.2%"
+      description: "Between 23.6% and 38.2%"
+      strength: "weak"
+      confluence_weight: 0.8
+      
+    - level: 0.707
+      name: "70.7%"
+      description: "Between 61.8% and 78.6%"
+      strength: "strong"
+      confluence_weight: 2.5
+      
+    - level: 0.886
+      name: "88.6%"
+      description: "Very deep retracement"
+      strength: "extreme"
+      confluence_weight: 3.5
+
+# ===========================
+# POSITION SCALING MATRIX
+# ===========================
+position_scaling:
+  # Base scaling using Fibonacci sequence: 1, 1, 2, 3, 5, 8, 13...
+  fibonacci_multipliers:
+    "23.6%": 1    # F(1) = 1x base position
+    "38.2%": 2    # F(3) = 2x base position  
+    "50.0%": 3    # F(4) = 3x base position
+    "61.8%": 5    # F(5) = 5x base position
+    "78.6%": 8    # F(6) = 8x base position
+  
+  # Advanced scaling with confluence factors
+  confluence_adjusted:
+    "23.6%":
+      base_multiplier: 1
+      max_multiplier: 1.5
+      confluence_boost: 0.2
+      
+    "38.2%":
+      base_multiplier: 2
+      max_multiplier: 3.0
+      confluence_boost: 0.4
+      
+    "50.0%":
+      base_multiplier: 3
+      max_multiplier: 4.5
+      confluence_boost: 0.6
+      
+    "61.8%":
+      base_multiplier: 5
+      max_multiplier: 7.5
+      confluence_boost: 1.0
+      
+    "78.6%":
+      base_multiplier: 8
+      max_multiplier: 12.0
+      confluence_boost: 1.5
+
+# ===========================
+# LEVEL CALCULATION SETTINGS
+# ===========================
+calculation:
+  # High/Low identification
+  swing_detection:
+    min_swing_strength: 5      # Minimum bars on each side for swing high/low
+    lookback_periods: 720      # 30 days (720 hours) lookback
+    min_move_percentage: 5.0   # Minimum 5% move to qualify as swing
+    
+  # Price data requirements
+  data_requirements:
+    min_data_points: 168       # Minimum 7 days of hourly data
+    preferred_timeframe: "1h"  # 1-hour candles for precision
+    max_data_age_hours: 2160   # 90 days maximum data age
+    
+  # Level validation
+  validation:
+    min_price_distance: 0.01   # 1% minimum distance between levels
+    max_level_spread: 0.20     # 20% maximum spread from high to low
+    require_volume_confirmation: true
+    
+# ===========================
+# CONFLUENCE FACTORS
+# ===========================
+confluence:
+  # Technical confluence
+  technical:
+    support_resistance:
+      weight: 2.0
+      lookback_days: 30
+      touch_tolerance: 0.005  # 0.5% tolerance for level touches
+      
+    moving_averages:
+      weight: 1.5
+      periods: [21, 50, 100, 200]  # SMA periods to check
+      proximity_threshold: 0.01    # 1% proximity to MA
+      
+    round_numbers:
+      weight: 1.0
+      major_levels: [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000]
+      minor_step: 1000  # Every $1000 level
+      
+    bollinger_bands:
+      weight: 1.5
+      period: 20
+      std_dev: 2.0
+      
+  # Volume confluence
+  volume:
+    high_volume_nodes:
+      weight: 2.5
+      volume_threshold_percentile: 80  # Top 20% volume bars
+      
+    volume_profile:
+      weight: 2.0
+      poc_proximity: 0.02  # 2% proximity to Point of Control
+      
+  # Time confluence
+  temporal:
+    fibonacci_time_zones:
+      weight: 1.0
+      enabled: false  # Disabled by default (complex)
+      
+    session_breaks:
+      weight: 0.5
+      major_sessions: ["US_OPEN", "LONDON_OPEN", "ASIA_OPEN"]
+
+# ===========================
+# MARKET REGIME ADJUSTMENTS
+# ===========================
+market_regimes:
+  # Bull market adjustments
+  bull_market:
+    detection_criteria:
+      - "price_above_ma_200": true
+      - "ma_50_above_ma_200": true
+      - "recent_high_within_days": 30
+      
+    adjustments:
+      reduce_deep_levels: true     # Less weight on 78.6% in bull markets
+      emphasize_shallow: true      # More weight on 23.6%, 38.2%
+      multiplier_adjustment: 0.8   # Reduce position sizes in bull
+      
+  # Bear market adjustments  
+  bear_market:
+    detection_criteria:
+      - "price_below_ma_200": true
+      - "ma_50_below_ma_200": true
+      - "drawdown_from_high": 0.20  # 20% drawdown
+      
+    adjustments:
+      emphasize_deep_levels: true  # More weight on 61.8%, 78.6%
+      reduce_shallow: true         # Less weight on 23.6%
+      multiplier_adjustment: 1.2   # Increase position sizes in bear
+      
+  # Sideways market adjustments
+  sideways_market:
+    detection_criteria:
+      - "price_near_ma_200": 0.05  # Within 5% of 200 MA
+      - "range_bound_days": 14     # 14+ days in range
+      
+    adjustments:
+      balanced_approach: true      # Equal weight to all levels
+      multiplier_adjustment: 1.0   # No adjustment
+
+# ===========================
+# EXECUTION PARAMETERS
+# ===========================
+execution:
+  # Order timing
+  timing:
+    entry_delay: 300          # 5 minutes delay after level hit
+    confirmation_period: 900  # 15 minutes confirmation period
+    stale_level_hours: 24     # Levels expire after 24 hours
+    
+  # Order sizing
+  sizing:
+    min_order_usd: 10.0       # Minimum $10 order
+    max_order_usd: 1000.0     # Maximum $1000 single order
+    size_increment: 5.0       # $5 increment steps
+    
+  # Risk parameters
+  risk:
+    max_levels_per_day: 3     # Maximum 3 level hits per day
+    cooling_period: 1800      # 30 minutes between orders
+    daily_budget: 2000.0      # $2000 daily budget
+    
+# ===========================
+# VALIDATION & TESTING
+# ===========================
+validation:
+  # Backtesting parameters
+  backtest:
+    start_date: "2023-01-01"
+    end_date: "2024-12-31"
+    timeframe: "1h"
+    slippage: 0.001          # 0.1% slippage assumption
+    commission: 0.0005       # 0.05% commission
+    
+  # Performance metrics
+  metrics:
+    track_hit_rate: true     # Track how often levels are hit
+    track_reversal_rate: true # Track how often reversals occur at levels
+    track_profit_per_level: true # Track profitability by level
+    
+  # Quality control
+  quality:
+    min_historical_accuracy: 0.60  # 60% minimum historical accuracy
+    require_statistical_significance: true
+    confidence_interval: 0.95      # 95% confidence interval
+
+# ===========================
+# NOTES & REFERENCES
+# ===========================
+notes:
+  mathematical_basis: |
+    Fibonacci retracements are based on the mathematical sequence discovered by 
+    Leonardo Fibonacci in the 13th century. The key ratios (23.6%, 38.2%, 61.8%) 
+    are derived from relationships within this sequence and appear frequently in 
+    natural phenomena and financial markets.
+    
+  trading_psychology: |
+    These levels work partly due to self-fulfilling prophecy - many traders watch 
+    the same levels, creating support and resistance. The 永久ナンピン strategy 
+    exploits this by accumulating at these mathematically and psychologically 
+    significant levels.
+    
+  risk_warning: |
+    While Fibonacci levels have historical significance, they are not guaranteed 
+    to hold. The permanent accumulation strategy means positions are never sold, 
+    which carries substantial risk during extended bear markets.
+
+# ===========================
+# VERSION & UPDATES
+# ===========================
+version: "1.0.0"
+last_updated: "2025-01-27"
+update_notes: |
+  Initial configuration for Nanpin Bot Fibonacci engine.
+  Includes primary and secondary levels, confluence factors,
+  market regime adjustments, and comprehensive validation parameters.

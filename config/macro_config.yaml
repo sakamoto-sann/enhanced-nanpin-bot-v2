@@ -1,0 +1,218 @@
+# 🌸 Macro Analyzer Configuration for Nanpin Strategy
+# Enhanced macro-informed permanent DCA with FRED + Polymarket integration
+
+# API Keys and Authentication
+api_keys:
+  fred: "7aa42875026454682d22f3e02afff1b2"  # Federal Reserve Economic Data API
+
+# Update Intervals (seconds)
+update_intervals:
+  macro_analysis: 1800      # 30 minutes - Complete macro analysis refresh
+  fred_data: 3600          # 1 hour - FRED economic indicators
+  polymarket_data: 900     # 15 minutes - Prediction market sentiment
+
+# Signal Thresholds for Regime Classification
+thresholds:
+  # Fear & Greed Index levels
+  extreme_fear: 20         # Below 20 = extreme fear (maximum opportunity)
+  fear: 40                 # Below 40 = fear (opportunity)
+  greed: 70               # Above 70 = greed (caution)
+  extreme_greed: 85       # Above 85 = extreme greed (maximum caution)
+  
+  # Economic Indicator Thresholds
+  high_inflation: 4.0      # Core CPI above 4% = high inflation
+  low_inflation: 2.0       # Core CPI below 2% = low inflation
+  high_fed_rate: 5.0       # Fed funds above 5% = restrictive
+  low_fed_rate: 2.0        # Fed funds below 2% = accommodative
+  high_vix: 30             # VIX above 30 = high fear/volatility
+  crisis_vix: 40           # VIX above 40 = crisis levels
+  
+  # Prediction Market Thresholds
+  high_recession_risk: 60  # Recession probability > 60%
+  high_rate_cut_prob: 70   # Rate cut probability > 70%
+  bitcoin_bullish: 65      # Bitcoin sentiment > 65%
+  crisis_probability: 50   # Banking/financial crisis > 50%
+
+# Position Scaling Multipliers
+position_scaling:
+  base_multiplier: 1.0           # Base Fibonacci multiplier
+  
+  # Regime-based scaling
+  crisis_multiplier: 2.5         # Crisis = 2.5x (maximum opportunity)
+  recession_multiplier: 2.0      # Recession risk = 2x
+  recovery_multiplier: 1.2       # Recovery = 1.2x (modest increase)
+  expansion_multiplier: 1.0      # Normal expansion = 1x
+  stagflation_multiplier: 1.5    # Stagflation = 1.5x (inflation hedge)
+  bubble_multiplier: 0.7         # Bubble = 0.7x (caution)
+  
+  # Fear/Greed scaling
+  extreme_fear_multiplier: 2.0   # Extreme fear = 2x (buy the blood)
+  fear_multiplier: 1.5           # Fear = 1.5x
+  neutral_multiplier: 1.0        # Neutral = 1x
+  greed_multiplier: 0.8          # Greed = 0.8x (slight caution)
+  extreme_greed_multiplier: 0.5  # Extreme greed = 0.5x (high caution)
+  
+  # Macro event scaling
+  fed_easing_multiplier: 1.5     # Expected rate cuts = 1.5x
+  inflation_hedge_multiplier: 1.3 # High inflation = 1.3x (hedge)
+  dollar_weakness_multiplier: 1.2 # Weak dollar = 1.2x
+  crisis_hedge_multiplier: 2.0    # Banking crisis = 2x (safe haven)
+  
+  # Limits
+  max_scaling_factor: 3.0        # Maximum total scaling (prevent over-leverage)
+  min_scaling_factor: 0.3        # Minimum scaling (never stop completely)
+
+# Risk Adjustment Factors
+risk_management:
+  # Base risk factors
+  base_risk_factor: 1.0
+  
+  # Regime risk adjustments
+  crisis_risk_factor: 0.7        # Reduce size during crisis volatility
+  bubble_risk_factor: 0.6        # Significant size reduction during bubbles
+  stagflation_risk_factor: 0.9   # Slight reduction during stagflation
+  recession_risk_factor: 0.8     # Moderate reduction during recession
+  
+  # Volatility risk adjustments
+  high_vix_risk_factor: 0.8      # Reduce during high volatility
+  crisis_vix_risk_factor: 0.6    # Significant reduction during crisis VIX
+  
+  # Confidence adjustments
+  low_confidence_factor: 0.7     # Reduce when macro confidence is low
+  high_confidence_factor: 1.2    # Increase when macro confidence is high
+
+# Fibonacci Level Adjustments
+fibonacci_adjustments:
+  # Macro-informed level modifications
+  crisis_deeper_levels: true     # Extend to 88.6% and 100% during crisis
+  recession_level_boost: 0.1     # Boost all levels by 10% during recession risk
+  inflation_level_adjustment: 0.05 # Adjust levels by 5% during high inflation
+  
+  # Additional retracement levels during extreme conditions
+  extreme_levels:
+    enabled: true
+    crisis_86_level: 0.886       # 88.6% Fibonacci level
+    crisis_100_level: 1.0        # 100% retracement (full cycle)
+    crisis_multipliers:
+      "88.6%": 13                # Fibonacci sequence continuation
+      "100%": 21                 # Maximum accumulation opportunity
+
+# Confidence Scoring
+confidence_scoring:
+  # Weights for confidence calculation
+  fred_data_weight: 0.4          # FRED data reliability
+  polymarket_volume_weight: 0.3  # Prediction market volume
+  historical_accuracy_weight: 0.2 # Historical signal accuracy
+  market_consensus_weight: 0.1   # Market consensus alignment
+  
+  # Minimum confidence thresholds
+  min_confidence_for_trading: 0.3  # 30% minimum confidence
+  high_confidence_threshold: 0.7   # 70% = high confidence
+  
+  # Confidence impact on scaling
+  confidence_scaling_enabled: true
+  low_confidence_scaling: 0.7     # Reduce scaling when confidence is low
+  high_confidence_scaling: 1.3    # Increase scaling when confidence is high
+
+# Macro Regime Classification Parameters
+regime_classification:
+  # Scoring weights for regime detection
+  vix_weight: 0.3               # VIX volatility impact
+  fed_rate_weight: 0.25         # Federal funds rate impact
+  inflation_weight: 0.2         # Inflation trend impact
+  growth_weight: 0.15           # GDP/employment impact
+  prediction_market_weight: 0.1 # Polymarket sentiment impact
+  
+  # Regime transition thresholds
+  regime_change_threshold: 0.6   # 60% confidence needed for regime change
+  regime_stability_periods: 3    # Require 3 consecutive confirmations
+
+# Special Event Handling
+special_events:
+  # Federal Reserve events
+  fomc_meeting_boost: 1.2        # 20% boost around FOMC meetings
+  fed_speech_boost: 1.1          # 10% boost around Fed speeches
+  
+  # Economic data releases
+  cpi_release_boost: 1.15        # 15% boost around CPI releases
+  jobs_report_boost: 1.1         # 10% boost around jobs reports
+  
+  # Crisis events
+  banking_crisis_boost: 2.0      # 100% boost during banking crisis
+  market_crash_boost: 1.8        # 80% boost during market crashes
+  geopolitical_crisis_boost: 1.3 # 30% boost during geopolitical events
+
+# Alert Thresholds
+alerts:
+  # Regime change alerts
+  regime_change_alert: true
+  
+  # Extreme condition alerts
+  extreme_fear_alert: true       # Alert when extreme fear detected
+  crisis_regime_alert: true      # Alert when crisis regime detected
+  high_opportunity_alert: true   # Alert when high opportunity conditions
+  
+  # Risk alerts
+  high_risk_alert: true          # Alert when risk factors are elevated
+  scaling_limit_alert: true      # Alert when hitting scaling limits
+
+# Historical Backtesting Parameters
+backtesting:
+  # Historical data requirements
+  min_historical_periods: 252   # Minimum 1 year of data
+  regime_history_periods: 1260  # 5 years for regime classification
+  
+  # Performance benchmarks
+  benchmark_strategies:
+    - "Simple Trump Era Strategy"  # Current best: +245.4%
+    - "Volatility Surfing Strategy" # +50.7%
+    - "Buy and Hold BTC"
+    - "DCA Weekly"
+  
+  # Success metrics
+  target_annual_return: 0.50     # 50% annual target
+  target_sharpe_ratio: 2.0       # 2.0 Sharpe ratio target
+  max_drawdown_threshold: 0.25   # 25% maximum drawdown
+
+# Logging and Monitoring
+logging:
+  macro_analysis_level: "INFO"
+  detailed_signal_logging: true
+  performance_tracking: true
+  regime_change_logging: true
+  
+  # Data export settings
+  export_daily_analysis: true
+  export_format: "json"
+  export_directory: "results/macro_analysis"
+
+# Advanced Features
+advanced_features:
+  # Machine learning enhancements
+  ml_signal_enhancement: false   # Disabled for v1
+  adaptive_thresholds: false     # Disabled for v1
+  
+  # Multi-timeframe analysis
+  multi_timeframe_analysis: true # Enabled
+  timeframes: ["1h", "4h", "1d", "1w"]
+  
+  # Correlation analysis
+  asset_correlation_analysis: true
+  correlation_assets: ["SPY", "QQQ", "GLD", "DXY"]
+  
+  # Social sentiment integration
+  social_sentiment_enabled: false # Disabled for v1
+  
+# Emergency Overrides
+emergency_overrides:
+  # Kill switches
+  emergency_stop_enabled: true
+  max_daily_drawdown: 0.10       # 10% daily drawdown = emergency stop
+  
+  # Override thresholds
+  manual_override_enabled: false  # Manual override capability
+  admin_override_code: "NANPIN_EMERGENCY_2025"
+  
+  # Safe mode
+  safe_mode_enabled: false        # Conservative mode
+  safe_mode_max_scaling: 1.5      # Maximum 1.5x scaling in safe mode

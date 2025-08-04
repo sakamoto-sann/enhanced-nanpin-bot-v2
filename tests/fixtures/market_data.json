@@ -1,0 +1,49 @@
+{
+  "sample_market_data": {
+    "symbol": "BTC_USDC_PERP",
+    "price": 63250.0,
+    "volume": 1000000.0,
+    "high_24h": 64000.0,
+    "low_24h": 62500.0,
+    "timestamp": 1722765600000,
+    "bid": 63245.0,
+    "ask": 63255.0,
+    "spread": 10.0
+  },
+  "fibonacci_test_data": {
+    "high": 70000.0,
+    "low": 60000.0,
+    "expected_levels": {
+      "23.6": 67640.0,
+      "38.2": 66180.0,
+      "50.0": 65000.0,
+      "61.8": 63820.0,
+      "78.6": 62140.0
+    }
+  },
+  "liquidation_test_data": {
+    "total_liquidations_1h": 15000000,
+    "total_liquidations_4h": 45000000,
+    "total_liquidations_12h": 120000000,
+    "major_clusters": [
+      {"price": 62000, "amount": 5000000},
+      {"price": 65000, "amount": 8000000},
+      {"price": 68000, "amount": 3000000}
+    ]
+  },
+  "websocket_test_data": {
+    "orderbook_update": {
+      "symbol": "BTC_USDC_PERP",
+      "bids": [[63245.0, 1.5], [63240.0, 2.0], [63235.0, 1.8]],
+      "asks": [[63255.0, 1.2], [63260.0, 1.9], [63265.0, 2.1]],
+      "timestamp": 1722765600000
+    },
+    "trade_update": {
+      "symbol": "BTC_USDC_PERP",
+      "price": 63250.0,
+      "quantity": 0.5,
+      "side": "buy",
+      "timestamp": 1722765600000
+    }
+  }
+}

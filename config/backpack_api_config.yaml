@@ -1,0 +1,347 @@
+# 🌸 Backpack Exchange API Configuration
+# 100% Official Documentation Compliant Settings
+
+# ===========================
+# API CONNECTION SETTINGS
+# ===========================
+api:
+  # Base URL (official Backpack API)
+  base_url: "https://api.backpack.exchange"
+  
+  # Timeout settings
+  timeout: 30.0
+  connect_timeout: 10.0
+  read_timeout: 30.0
+  
+  # Retry configuration
+  max_retries: 3
+  retry_delay: 1.0
+  exponential_backoff: true
+  backoff_factor: 2.0
+
+# ===========================
+# AUTHENTICATION SETTINGS
+# ===========================
+authentication:
+  # ED25519 signature settings
+  signature_algorithm: "ED25519"
+  encoding: "base64"
+  
+  # Request window settings
+  default_window: 5000      # 5 seconds (default)
+  max_window: 60000         # 60 seconds (maximum allowed)
+  min_window: 1000          # 1 second (minimum practical)
+  
+  # Timestamp settings
+  timestamp_offset: 0       # No offset by default
+  max_clock_skew: 1000      # 1 second maximum clock skew tolerance
+
+# ===========================
+# API ENDPOINTS MAPPING
+# ===========================
+endpoints:
+  # Account Management
+  account:
+    balance: "/api/v1/capital"
+    collateral: "/api/v1/capital/collateral"
+    margin: "/api/v1/account/margin"
+    limits: "/api/v1/account/limits"
+    
+  # Position Management  
+  positions:
+    query: "/api/v1/positions"
+    borrow_lend: "/api/v1/borrowLend/positions"
+    
+  # Order Management
+  orders:
+    execute: "/api/v1/order"
+    query: "/api/v1/order"
+    query_all: "/api/v1/orders"
+    cancel: "/api/v1/order"
+    cancel_all: "/api/v1/orders"
+    
+  # Market Data (Public)
+  market:
+    ticker: "/api/v1/ticker"
+    tickers: "/api/v1/tickers"
+    depth: "/api/v1/depth"
+    klines: "/api/v1/klines"
+    trades: "/api/v1/trades"
+    
+  # Risk Management
+  risk:
+    margin_info: "/api/v1/account/margin"
+    liquidation_price: "/api/v1/positions"  # Included in position data
+
+# ===========================
+# INSTRUCTION MAPPING
+# ===========================
+instructions:
+  # Account operations
+  account_query: "accountQuery"
+  balance_query: "balanceQuery"
+  collateral_query: "collateralQuery"
+  margin_query: "marginQuery"
+  
+  # Position operations
+  position_query: "positionQuery"
+  borrow_lend_query: "borrowLendPositionQuery"
+  
+  # Order operations
+  order_execute: "orderExecute"
+  order_query: "orderQuery"
+  order_query_all: "orderQueryAll"
+  order_cancel: "orderCancel"
+  order_cancel_all: "orderCancelAll"
+  
+  # Market data (no instruction needed for public endpoints)
+
+# ===========================
+# ORDER PARAMETERS
+# ===========================
+orders:
+  # Default order settings for Nanpin strategy
+  default_symbol: "BTC_USDC"
+  default_side: "Bid"        # Buy orders only
+  default_type: "Market"     # Market orders for immediate execution
+  default_tif: "IOC"         # Immediate or Cancel
+  
+  # Order validation
+  min_quantity: 0.00001      # Minimum BTC quantity
+  max_quantity: 10.0         # Maximum BTC quantity per order
+  min_quote_quantity: 10.0   # Minimum USDC amount
+  max_quote_quantity: 10000.0 # Maximum USDC amount per order
+  
+  # Precision settings
+  price_precision: 2         # 2 decimal places for price
+  quantity_precision: 8      # 8 decimal places for BTC quantity
+  
+  # Order types supported
+  supported_order_types:
+    - "Market"
+    - "Limit"
+    - "IOC"    # Immediate or Cancel
+    - "FOK"    # Fill or Kill
+  
+  # Time in force options
+  supported_tif:
+    - "GTC"    # Good Till Cancel
+    - "IOC"    # Immediate or Cancel  
+    - "FOK"    # Fill or Kill
+
+# ===========================
+# RATE LIMITING
+# ===========================
+rate_limits:
+  # General rate limits (conservative approach)
+  requests_per_minute: 100
+  requests_per_second: 5
+  burst_limit: 10
+  
+  # Endpoint-specific limits
+  order_requests_per_minute: 60
+  market_data_requests_per_minute: 120
+  account_requests_per_minute: 30
+  
+  # Rate limiting strategy
+  use_token_bucket: true
+  bucket_size: 10
+  refill_rate: 2  # tokens per second
+  
+  # Backoff strategy
+  rate_limit_backoff: 1.0    # Initial backoff in seconds
+  max_backoff: 60.0          # Maximum backoff in seconds
+
+# ===========================
+# ERROR HANDLING
+# ===========================
+error_handling:
+  # HTTP status code handling
+  retry_on_status:
+    - 429  # Too Many Requests
+    - 502  # Bad Gateway
+    - 503  # Service Unavailable
+    - 504  # Gateway Timeout
+    
+  # Don't retry on these errors
+  no_retry_status:
+    - 400  # Bad Request
+    - 401  # Unauthorized
+    - 403  # Forbidden
+    - 404  # Not Found
+    - 422  # Unprocessable Entity
+    
+  # Error response handling
+  parse_error_messages: true
+  log_all_errors: true
+  
+  # Connection error handling
+  connection_timeout_retry: true
+  dns_resolution_retry: true
+  ssl_error_retry: false
+
+# ===========================
+# MARKET DATA SETTINGS
+# ===========================
+market_data:
+  # Kline/Candlestick settings
+  default_interval: "1h"     # 1-hour intervals for Fibonacci calculation
+  max_limit: 1000           # Maximum klines per request
+  
+  # Supported intervals
+  supported_intervals:
+    - "1m"   # 1 minute
+    - "5m"   # 5 minutes
+    - "15m"  # 15 minutes
+    - "1h"   # 1 hour
+    - "4h"   # 4 hours
+    - "1d"   # 1 day
+    
+  # Price precision
+  price_tick_size: 0.01     # $0.01 tick size for BTC_USDC
+  
+  # Data requirements
+  min_candles_for_fibonacci: 168  # 7 days of hourly data minimum
+  preferred_candles: 720          # 30 days preferred
+
+# ===========================
+# POSITION MANAGEMENT
+# ===========================
+position_management:
+  # Single position constraint (Backpack limitation)
+  max_positions: 1           # Backpack allows one position per symbol
+  
+  # Position sizing
+  increment_only: true       # Only increase position size (never decrease)
+  track_average_price: true  # Track average entry price
+  
+  # Margin settings
+  default_leverage: 1.0      # Start with 1x leverage
+  max_leverage: 10.0         # Maximum 10x leverage
+  target_leverage: 3.0       # Target 3x leverage for strategy
+  
+  # Risk parameters
+  maintenance_margin_buffer: 0.1  # 10% buffer above maintenance margin
+  liquidation_price_buffer: 0.2   # 20% buffer above liquidation price
+
+# ===========================
+# WEBSOCKET SETTINGS
+# ===========================
+websocket:
+  # WebSocket URLs
+  public_url: "wss://ws.backpack.exchange"
+  private_url: "wss://ws.backpack.exchange"
+  
+  # Connection settings
+  ping_interval: 30          # Ping every 30 seconds
+  ping_timeout: 10           # 10 second ping timeout
+  reconnect_interval: 5      # Reconnect after 5 seconds
+  max_reconnect_attempts: 10 # Maximum reconnection attempts
+  
+  # Subscriptions for Nanpin strategy
+  subscriptions:
+    ticker: ["BTC_USDC"]     # Price updates
+    depth: ["BTC_USDC"]      # Order book updates
+    trades: ["BTC_USDC"]     # Trade updates
+    
+  # Private subscriptions (requires authentication)
+  private_subscriptions:
+    account: true            # Account updates
+    orders: true             # Order updates
+    positions: true          # Position updates
+
+# ===========================
+# LOGGING CONFIGURATION
+# ===========================
+api_logging:
+  # Request/Response logging
+  log_requests: true
+  log_responses: true
+  log_headers: false         # Don't log sensitive headers
+  log_body: true
+  
+  # Sensitive data filtering
+  mask_sensitive_data: true
+  sensitive_fields:
+    - "X-API-Key"
+    - "X-Signature"
+    - "signature"
+    - "api_key"
+    - "secret"
+    - "private_key"
+    
+  # Performance logging
+  log_response_times: true
+  log_rate_limit_status: true
+  
+  # Error logging
+  log_all_errors: true
+  log_retry_attempts: true
+
+# ===========================
+# TESTING & DEVELOPMENT
+# ===========================
+testing:
+  # Test environment
+  use_testnet: false         # Set to true for testing
+  testnet_url: ""            # Backpack testnet URL (if available)
+  
+  # Mock mode
+  mock_mode: false           # Set to true for development
+  mock_responses: false      # Use real API responses
+  
+  # Validation
+  validate_requests: true    # Validate request format
+  validate_responses: true   # Validate response format
+  strict_mode: true          # Strict validation mode
+
+# ===========================
+# COMPLIANCE & SECURITY
+# ===========================
+security:
+  # SSL/TLS settings
+  verify_ssl: true
+  ssl_version: "TLSv1.2"
+  
+  # API key security
+  rotate_keys_days: 90       # Rotate keys every 90 days
+  key_usage_tracking: true   # Track API key usage
+  
+  # Request security
+  validate_signatures: true  # Always validate signatures
+  timestamp_validation: true # Validate timestamps
+  
+  # Network security
+  allowed_ips: []            # Empty = allow all IPs
+  use_proxy: false           # Set to true if using proxy
+  proxy_url: ""              # Proxy URL if needed
+
+# ===========================
+# MONITORING & ALERTS
+# ===========================
+monitoring:
+  # Performance monitoring
+  track_latency: true
+  latency_threshold_ms: 1000  # Alert if latency > 1 second
+  
+  # Error monitoring
+  error_rate_threshold: 0.05  # Alert if error rate > 5%
+  consecutive_error_limit: 5   # Alert after 5 consecutive errors
+  
+  # Rate limit monitoring
+  rate_limit_usage_threshold: 0.8  # Alert at 80% rate limit usage
+  
+  # Connection monitoring
+  connection_health_check: true
+  health_check_interval: 300  # 5 minutes
+
+# ===========================
+# VERSION INFO
+# ===========================
+version: "1.0.0"
+api_version: "v1"
+last_updated: "2025-01-27"
+compliance_notes: |
+  This configuration is based on the official Backpack Exchange API documentation
+  available at https://docs.backpack.exchange/. All endpoints, instructions, and
+  parameters are designed to be 100% compliant with the official specification.
